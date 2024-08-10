@@ -4,7 +4,7 @@
 # @brief     Contains the build instructions for project files for the Junia
 #            Editor
 # @author    Max Hager
-# @date      14.04.2024
+# @date      2024-04-14
 # @copyright © Max Hager, 2024. All right reserved.
 #
 ################################################################################
@@ -26,7 +26,6 @@ set( DEP_DIR "${CMAKE_CURRENT_SOURCE_DIR}/dep" )
 set_target_properties(${JUNIAEDITOR_NAME} PROPERTIES
 	CXX_STANDARD_REQUIRED            ON
 	CXX_STANDARD                     20
-	FOLDER                           "Junia"
 	RUNTIME_OUTPUT_DIRECTORY_DEBUG   "${BIN_DIR}"
 	RUNTIME_OUTPUT_DIRECTORY_RELEASE "${BIN_DIR}"
 	RUNTIME_OUTPUT_DIRECTORY         "${BIN_DIR}"
@@ -38,6 +37,7 @@ set_target_properties(${JUNIAEDITOR_NAME} PROPERTIES
 target_compile_definitions(${JUNIAEDITOR_NAME} PRIVATE BUILD_JUNIAEDITOR)
 
 # Junia
+set( JUNIA_DLL_COPY_TARGET_DIR "${BIN_DIR}" )
 add_subdirectory("${DEP_DIR}/Junia")
 if(NOT ${JUNIA_FOUND})
 	message(FATAL_ERROR "Junia could not be found!")
@@ -62,15 +62,5 @@ target_sources(${JUNIAEDITOR_NAME} PRIVATE
 )
 
 source_group( "src" FILES ${SRC_JUNIAEDITOR} )
-
-add_custom_command(TARGET ${JUNIAEDITOR_NAME}
-	POST_BUILD
-	COMMAND ${CMAKE_COMMAND} -E copy_if_different
-		"${JUNIA_SHARED_LIBRARY}"
-		"${BIN_DIR}"
-	DEPENDS "${JUNIA_SHARED_LIBRARY}"
-	COMMENT "Copying DLLs for Junia Editor"
-	VERBATIM
-)
 
 add_dependencies(${JUNIAEDITOR_NAME} Junia)
